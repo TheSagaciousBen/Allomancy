@@ -103,6 +103,18 @@ public class CommonEventHandler {
                         data.setAmount(mt, oldData.getAmount(mt));
                     }
                 }
+                
+                if (event.isWasDeath()) {
+                    data.setUninvested();
+                    byte randomMisting = (byte) (event.getPlayer().getRandom().nextInt(Metal.values().length));
+                    data.addPower(Metal.getMetal(randomMisting));
+                    ItemStack flakes = new ItemStack(MaterialsSetup.FLAKES.get(randomMisting).get());
+                    // Give the player one flake of their metal
+                    if (!player.getInventory().add(flakes)) {
+                        ItemEntity entity = new ItemEntity(player.getCommandSenderWorld(), player.position().x(), player.position().y(), player.position().z(), flakes);
+                        player.getCommandSenderWorld().addFreshEntity(entity);
+                    }
+                }
             });
         });
         event.getOriginal().getCapability(AllomancerCapability.PLAYER_CAP).invalidate();
